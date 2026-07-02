@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects - Revaldo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header id="navbar">
+        <nav class="nav-container animate-on-scroll slide-in-top">
+            <a href="index.html" class="logo">Revall<span class="logo-accent">-dev</span></a>
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="projects.html" class="nav-link active">Projects</a></li>
+                <li><a href="experience.html" class="nav-link">Experience</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="section page-hero">
+            <div class="container">
+                <h1 class="section-title">My Projects</h1>
+                <p class="page-subtitle">Tambah project realtime tanpa buka codingan.</p>
+
+                <form class="project-admin-form" id="project-login-form">
+                    <div class="form-group">
+                        <input type="password" id="project-password" placeholder="Password Admin" required>
+                    </div>
+                    <button type="submit" class="glow-genz-button">Masuk Admin</button>
+                </form>
+
+                <form class="project-admin-form project-admin-panel" id="project-form">
+                    <div class="form-group">
+                        <input type="text" id="project-title" placeholder="Nama Project" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="url" id="project-image" placeholder="Link Gambar Project" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="project-description" placeholder="Deskripsi Project" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="project-tech" placeholder="Tech stack, pisahkan dengan koma" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="url" id="project-demo" placeholder="Link Demo">
+                    </div>
+                    <div class="form-group">
+                        <input type="url" id="project-github" placeholder="Link GitHub">
+                    </div>
+                    <div class="project-form-actions">
+                        <button type="submit" class="glow-genz-button" id="project-submit">Tambah Project</button>
+                        <button type="button" class="project-link project-cancel-edit" id="project-cancel-edit">Batal Edit</button>
+                    </div>
+                </form>
+
+                <div class="projects-grid" id="projects-list"></div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

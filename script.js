@@ -1,17 +1,21 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize all features
     initNavbar();
     initTypingEffect();
     initOrbitAnimations();
     initSunPhotoModal();
     initSmoothScroll();
     initSectionAnimations();
+    initProjectsPage();
 });
 
 function initNavbar() {
     const hamburger = document.getElementById('hamburger');
     const navMenu = document.getElementById('nav-menu');
     const navLinks = document.querySelectorAll('.nav-link');
+
+    if (!hamburger || !navMenu) {
+        return;
+    }
 
     hamburger.addEventListener('click', () => {
         hamburger.classList.toggle('active');
@@ -90,7 +94,9 @@ function initTypingEffect() {
         setTimeout(typeEffect, typingSpeed);
     }
 
-    typeEffect();
+    if (typingText) {
+        typeEffect();
+    }
 }
 
 
@@ -100,7 +106,8 @@ function initOrbitAnimations() {
 
     planets.forEach((planet, index) => {
         const startAngle = Math.random() * 360;
-        const radius = 120 + (index * 40);
+        const viewportWidth = window.innerWidth;
+        const radius = viewportWidth <= 640 ? 110 + (index * 14) : viewportWidth <= 768 ? 120 + (index * 16) : 140 + (index * 30);
         
         const duration = 15 + Math.random() * 15;
         const direction = Math.random() > 0.5 ? 'normal' : 'reverse';
@@ -216,12 +223,164 @@ function initSectionAnimations() {
     elements.forEach(element => elementObserver.observe(element));
 }
 
+function initProjectsPage() {
+    const loginForm = document.getElementById('project-login-form');
+    const form = document.getElementById('project-form');
+    const list = document.getElementById('projects-list');
+    const submitButton = document.getElementById('project-submit');
+    const cancelEditButton = document.getElementById('project-cancel-edit');
+    let editingId = null;
+    let isAdmin = sessionStorage.getItem('revallProjectAdmin') === 'true';
+    let projects = [];
 
+    if (!loginForm || !form || !list || !submitButton || !cancelEditButton) {
+        return;
+    }
 
+    const adminPassword = 'revalladmin';
+    const firebaseConfig = {
+        apiKey: 'ISI_API_KEY',
+        authDomain: 'ISI_AUTH_DOMAIN',
+        projectId: 'ISI_PROJECT_ID',
+        storageBucket: 'ISI_STORAGE_BUCKET',
+        messagingSenderId: 'ISI_MESSAGING_SENDER_ID',
+        appId: 'ISI_APP_ID'
+    };
+    const isFirebaseReady = window.firebase && !Object.values(firebaseConfig).some(value => value.startsWith('ISI_'));
+    const db = isFirebaseReady ? firebase.initializeApp(firebaseConfig).firestore() : null;
 
+    function setAdminState() {
+        loginForm.style.display = isAdmin ? 'none' : 'block';
+        form.style.display = isAdmin ? 'block' : 'none';
+    }
 
+    function getProjectData() {
+        return {
+            title: document.getElementById('project-title').value,
+            image: document.getElementById('project-image').value,
+            description: document.getElementById('project-description').value,
+            tech: document.getElementById('project-tech').value.split(',').map(item => item.trim()).filter(Boolean),
+            demo: document.getElementById('project-demo').value,
+            github: document.getElementById('project-github').value,
+            updatedAt: Date.now()
+        };
+    }
 
+    function renderProjects() {
+        list.innerHTML = projects.map(project => `
+            <div class="project-card">
+                <div class="project-image">
+                    <img src="${project.image}" alt="${project.title}">
+                </div>
+                <div class="project-content">
+                    <h3>${project.title}</h3>
+                    <p>${project.description}</p>
+                    <div class="project-tech">
+                        ${project.tech.map(item => `<span>${item}</span>`).join('')}
+                    </div>
+                    <div class="project-links">
+                        ${project.demo ? `<a href="${project.demo}" target="_blank" rel="noopener noreferrer" class="project-link">Live Demo</a>` : ''}
+                        ${project.github ? `<a href="${project.github}" target="_blank" rel="noopener noreferrer" class="project-link">GitHub</a>` : ''}
+                        ${isAdmin ? `<button class="project-link project-edit" type="button" data-id="${project.id}">Edit</button><button class="project-link project-delete" type="button" data-id="${project.id}">Hapus</button>` : ''}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
 
+    function resetProjectForm() {
+        editingId = null;
+        form.reset();
+        submitButton.textContent = 'Tambah Project';
+        cancelEditButton.style.display = 'none';
+    }
 
+    function loadLocalProjects() {
+        projects = JSON.parse(localStorage.getItem('revallProjects')) || [];
+        renderProjects();
+    }
 
-console.log('🚀 Revall Portfolio loaded successfully!');
+    function saveLocalProjects() {
+        localStorage.setItem('revallProjects', JSON.stringify(projects));
+    }
+
+    if (db) {
+        db.collection('projects').orderBy('updatedAt', 'desc').onSnapshot(snapshot => {
+            projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderProjects();
+        });
+    } else {
+        loadLocalProjects();
+    }
+
+    loginForm.addEventListener('submit', event => {
+        event.preventDefault();
+        if (document.getElementById('project-password').value !== adminPassword) {
+            alert('Password salah');
+            return;
+        }
+        isAdmin = true;
+        sessionStorage.setItem('revallProjectAdmin', 'true');
+        setAdminState();
+        renderProjects();
+    });
+
+    form.addEventListener('submit', async event => {
+        event.preventDefault();
+        const projectData = getProjectData();
+
+        if (db) {
+            if (editingId) {
+                await db.collection('projects').doc(editingId).update(projectData);
+            } else {
+                await db.collection('projects').add({ ...projectData, createdAt: Date.now() });
+            }
+        } else if (editingId) {
+            projects = projects.map(project => project.id === editingId ? { id: editingId, ...projectData } : project);
+            saveLocalProjects();
+            renderProjects();
+        } else {
+            projects.unshift({ id: String(Date.now()), ...projectData });
+            saveLocalProjects();
+            renderProjects();
+        }
+
+        resetProjectForm();
+    });
+
+    list.addEventListener('click', async event => {
+        const id = event.target.dataset.id;
+        const project = projects.find(item => item.id === id);
+
+        if (event.target.classList.contains('project-edit') && project) {
+            editingId = id;
+            document.getElementById('project-title').value = project.title;
+            document.getElementById('project-image').value = project.image;
+            document.getElementById('project-description').value = project.description;
+            document.getElementById('project-tech').value = project.tech.join(', ');
+            document.getElementById('project-demo').value = project.demo;
+            document.getElementById('project-github').value = project.github;
+            submitButton.textContent = 'Update Project';
+            cancelEditButton.style.display = 'inline-flex';
+            form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+
+        if (event.target.classList.contains('project-delete') && id) {
+            if (db) {
+                await db.collection('projects').doc(id).delete();
+            } else {
+                projects = projects.filter(projectItem => projectItem.id !== id);
+                saveLocalProjects();
+                renderProjects();
+            }
+            resetProjectForm();
+        }
+    });
+
+    cancelEditButton.addEventListener('click', resetProjectForm);
+    setAdminState();
+    resetProjectForm();
+}
+
+console.log('Revall Portfolio loaded successfully!');

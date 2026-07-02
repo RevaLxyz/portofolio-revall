@@ -18,9 +18,12 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
+  width: 100%;
+  max-width: 100vw;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Ubuntu, Cantarell, 'Noto Sans', sans-serif;
   background: var(--bg-1);
   color: var(--text);
@@ -64,6 +67,13 @@ body::after {
 @keyframes stars {
   from { transform: translateY(0px); }
   to { transform: translateY(-100px); }
+}
+
+main,
+section,
+.container {
+  max-width: 100%;
+  overflow-x: clip;
 }
 
 .container {
@@ -170,10 +180,15 @@ body::after {
 }
 
 .social-icon {
-  color: #888888; /* grey color for non-hover state */
+  color: #888888;
   transition: all 0.3s ease;
-  padding: 8px;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .social-icon:hover {
@@ -269,11 +284,16 @@ body::after {
 
 .hero-social-icon {
   color: var(--muted);
-  padding: 10px;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50%;
   transition: all 0.3s ease;
   background: rgba(14, 33, 64, 0.5);
   backdrop-filter: blur(5px);
+  flex-shrink: 0;
 }
 
 .hero-social-icon:hover {
@@ -285,14 +305,18 @@ body::after {
 
 /* Avatar and Solar System */
 .hero-visual {
+  width: 100%;
+  max-width: 100%;
   display: flex;
   justify-content: center;
+  overflow: visible;
   animation: slideInRight 1s ease-out;
 }
 
 .avatar-container {
   position: relative;
   width: 500px;
+  max-width: 100%;
   height: 500px;
   display: flex;
   align-items: center;
@@ -301,8 +325,8 @@ body::after {
 
 /* Matahari (Sun) - Elemento visual */
 .sun-core {
-  width: 168px; /* 40% larger than 120px */
-  height: 168px; /* 40% larger than 120px */
+  width: 190px;
+  height: 190px;
   border-radius: 50%;
   position: absolute;
   top: 50%;
@@ -336,8 +360,8 @@ body::after {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 48px;
-  height: 48px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
   font-size: 10px;
   font-weight: bold;
@@ -511,19 +535,18 @@ body::after {
   .nav-menu {
     position: fixed;
     top: 70px;
-    left: 0;
+    left: -100%;
     width: 100%;
     background: rgba(6, 21, 38, 0.95);
     backdrop-filter: blur(10px);
     flex-direction: column;
     padding: 20px;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
+    transition: left 0.3s ease;
     border-bottom: 1px solid rgba(56, 182, 255, 0.1);
   }
 
   .nav-menu.active {
-    transform: translateX(0);
+    left: 0;
   }
 
   .hamburger {
@@ -552,13 +575,13 @@ body::after {
   }
 
   .avatar-container {
-    width: 350px;
-    height: 350px;
+    width: 420px;
+    height: 420px;
   }
 
   .sun-core {
-    width: 80px;
-    height: 80px;
+    width: 170px;
+    height: 170px;
   }
 
 
@@ -569,39 +592,15 @@ body::after {
     top: -15px;
   }
 
-  .orbit-icon.html {
-    width: 20px;
-    height: 20px;
-  }
-
-  .orbit-icon.css {
-    width: 12px;
-    height: 12px;
-  }
-
-  .orbit-icon.js {
-    width: 16px;
-    height: 16px;
-  }
-
-  .orbit-icon.react {
-    width: 18px;
-    height: 18px;
-  }
-
-  .orbit-icon.nodejs {
-    width: 20px;
-    height: 20px;
-  }
-
-  .orbit-icon.python {
-    width: 22px;
-    height: 22px;
-  }
-
+  .orbit-icon.html,
+  .orbit-icon.css,
+  .orbit-icon.js,
+  .orbit-icon.react,
+  .orbit-icon.nodejs,
+  .orbit-icon.python,
   .orbit-icon.git {
-    width: 24px;
-    height: 24px;
+    width: 48px;
+    height: 48px;
   }
 
   .moon-orbit {
@@ -648,13 +647,13 @@ body::after {
   }
 
   .avatar-container {
-    width: 250px;
-    height: 250px;
+    width: 340px;
+    height: 340px;
   }
 
   .sun-core {
-    width: 60px;
-    height: 60px;
+    width: 155px;
+    height: 155px;
   }
 
 
@@ -665,39 +664,15 @@ body::after {
     top: -12px;
   }
 
-  .orbit-icon.html {
-    width: 16px;
-    height: 16px;
-  }
-
-  .orbit-icon.css {
-    width: 10px;
-    height: 10px;
-  }
-
-  .orbit-icon.js {
-    width: 12px;
-    height: 12px;
-  }
-
-  .orbit-icon.react {
-    width: 14px;
-    height: 14px;
-  }
-
-  .orbit-icon.nodejs {
-    width: 16px;
-    height: 16px;
-  }
-
-  .orbit-icon.python {
-    width: 18px;
-    height: 18px;
-  }
-
+  .orbit-icon.html,
+  .orbit-icon.css,
+  .orbit-icon.js,
+  .orbit-icon.react,
+  .orbit-icon.nodejs,
+  .orbit-icon.python,
   .orbit-icon.git {
-    width: 20px;
-    height: 20px;
+    width: 42px;
+    height: 42px;
   }
 
   .moon-orbit {
@@ -713,6 +688,14 @@ body::after {
 
   .nav-container {
     padding: 12px 15px;
+  }
+
+  .hero-text,
+  .hero-visual,
+  .slide-in-left,
+  .slide-in-right {
+    animation: none;
+    transform: none;
   }
 
 
@@ -907,10 +890,15 @@ body::after {
 .social-link {
   color: var(--muted);
   transition: all 0.3s ease;
-  padding: 12px;
+  width: 50px;
+  height: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 56, 56, 0.2);
+  flex-shrink: 0;
 }
 
 .social-link:hover {
@@ -952,6 +940,84 @@ body::after {
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
+  color: var(--muted);
+}
+
+.page-hero {
+  padding-top: 120px;
+  min-height: 100vh;
+}
+
+.page-subtitle {
+  max-width: 680px;
+  margin: -50px auto 40px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.logo {
+  text-decoration: none;
+}
+
+.project-admin-form {
+  max-width: 720px;
+  margin: 0 auto 60px;
+  padding: 30px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 56, 56, 0.2);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.project-admin-panel {
+  display: none;
+}
+
+.project-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.project-edit,
+.project-delete,
+.project-cancel-edit {
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.project-cancel-edit {
+  display: none;
+}
+
+.experience-list {
+  display: grid;
+  gap: 24px;
+  max-width: 850px;
+  margin: 0 auto;
+}
+
+.experience-card {
+  padding: 28px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 56, 56, 0.2);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.experience-date {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.experience-card h3 {
+  margin: 10px 0;
+  color: var(--text);
+}
+
+.experience-card p {
   color: var(--muted);
 }
 
